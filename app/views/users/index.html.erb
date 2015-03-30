@@ -1,0 +1,63 @@
+<div class="Table">
+  <div class="Row">
+    <h1>Welcome to Chatroom for Hipsters!</h1>
+  </div>
+  <div class="Row">
+    <div id="user_list_space">
+      <h4>Users:</h4>
+      <ul>
+        <% @users.each do |user| %>
+          <li>
+            <%= user.username %> (<%= user.active ? "Active" : "Not-Active" %>)
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div id="chat_space">
+      <div id="comment_space">
+        <h4>Comments:</h4>
+        <table>
+          <% @comments.each do |user_comment| %>
+            <tr>
+              <div>
+                <strong>
+                  <%= User.find(user_comment.user_id).username %>
+                </strong> @ <%= user_comment.created_at %></div>
+              <div><%= user_comment.comment %></div>
+            </tr>
+          <% end %> 
+        </table>
+      </div>
+      <div id="comment_form">
+        <%= form_tag "/comments/submit/#{session[:user_id]}" do %>
+          <h4>Comment Here!</h4>
+          <div>
+            <%= text_area_tag :comment %>
+          </div>
+          <div>
+            <%= submit_tag "Submit" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="user_space">
+      <div>
+        Current Username: <strong><%= User.find(session[:user_id]).username %></strong>
+      </div>
+      <div>
+        Input New Username Here:
+      </div>
+      <div>
+        <%= form_tag "/users/change_username/#{session[:user_id]}" do %>
+          <%= text_field_tag :username %>
+          <%= submit_tag "Submit" %>
+        <% end %>
+      </div>
+      <div id="destroy_session">
+          <%= link_to "Destroy Session", {:controller => :users, :action => :destroy_session} %>
+      </div>
+    </div>
+  </div>
+</div>

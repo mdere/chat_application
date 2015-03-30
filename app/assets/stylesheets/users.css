@@ -1,0 +1,35 @@
+// Place all the styles related to the users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.Table {
+	display: table;
+}
+
+.Row {
+	display:table-row;	
+}
+
+#user_list_space {
+	display: table-cell;
+	width: 200px;
+	float: left
+	border-style: solid;
+	border-width: 5px;
+}
+
+#chat_space {
+	display: table-cell;
+}
+
+#comment_space {
+  margin: 0px 50px 50px 0px;
+  width: 300px;
+}
+
+#comment_form 
+	width: 250px;
+}
+
+#user_space {
+	
+}
