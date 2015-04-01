@@ -25,9 +25,13 @@ class UsersController < ApplicationController
   end
 
   def update_admin
-    user = User.find(params[:user_id])
-    user.update_attributes(admin: params[:admin])
-    redirect_to :root
+    if params[:admin].present? && params[:user_id].present?
+      user = User.find(params[:user_id])
+      user.update_attributes(admin: params[:admin])
+      redirect_to root_path
+    else
+      redirect_to root_path
+    end
   end
 
   def destroy_session

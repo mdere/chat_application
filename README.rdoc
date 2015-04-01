@@ -1,28 +1,35 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This here are the mistakes I overlooked and what I could have done:
 
-Things you may want to cover:
+* User Session:
 
-* Ruby version
+I could have used some form of "sign-in" authentication as guest or admin. With a UI in the homepage with "sign-in as guest or admin". This would have been a better solution. 
 
-* System dependencies
+When user signs in as guest - create a new anonymous_user and redirect to root_url.
+When Admin signs in - redirects to sign_in page with credentials managed by sessions controller "create" maybe, if User.authenticate(credentials) and user admin attribute :admin eq true, then redirect to root_url.
 
-* Configuration
+Then when use signs out, this was another miss on my part I just noticed afterwards, I tried to create a destroy session link for testing purposes, BUT I could have implemented that as a sign_out button which calls action sessions#destroy setting the session[:user_id] to nil
 
-* Database creation
+The reason I went with this route was because I thought I could have got away with relying on the session of the user when they opened this page. This was clearly an assumption on my part to assume that each user's session was defined on the browser session. 
 
-* Database initialization
+* Admin viewing all comments vs Guest viewing all comments
 
-* How to run the test suite
+I should have in users#index when pulling all the comments, I should have did the following if I were to follow my current implementation, kinda hacky, but I believe this will work:
 
-* Services (job queues, cache servers, search engines, etc.)
+if @current_user.admin
+  @comments = Comment.all
+else
+  # For all other guest users
+  last_current_user_comment = Comment.where("user_id = ?", @current_user.id).first
+  # This activerecord query will pull all comments after the user
+  # created_at time, which I believe I should have done.
+  @comments = Comment.where("created_at > ?", @current_user.created_at)
+end
 
-* Deployment instructions
+* Setting Admin-ship through GET request
 
-* ...
+I currently have an action in User that we can invoke update_admin
+It takes in params[:user_id] and params[:admin] - I could have just set it up the route to expect update_admin/:user_id/:admin, but update_admin/:user_id?admin=<true||false>
 
-
-Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
