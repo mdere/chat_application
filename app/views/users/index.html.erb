@@ -56,7 +56,9 @@
         <% end %>
       </div>
       <div id="destroy_session">
-          <%= link_to "Destroy Session", {:controller => :users, :action => :destroy_session} %>
+          <%= form_tag "/users/destroy_session" do %>
+            <%= submit_tag "Destroy Session" %>
+          <% end %>
       </div>
     </div>
   </div>

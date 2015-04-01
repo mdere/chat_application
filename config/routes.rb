@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
-  resources :comments
+  root :to => "users#index"
 
+  resources :comments
   resources :users
 
-  post 'comments/submit/:user_id' => 'comments#submit'
-  post 'users/change_username/:user_id' => 'users#change_username'
-  root "users#index"
+  post 'comments/submit/:user_id', to: 'comments#submit'
+  post 'users/change_username/:user_id', to: 'users#change_username'
 
-  get 'users/update_admin/:user_id' => 'users#update_admin'
-  get 'users/destroy_session' => 'users#destroy_session'
+  get 'users/update_admin/:user_id', to: 'users#update_admin'
+  post 'users/destroy_session',  to: 'users#destroy_session'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

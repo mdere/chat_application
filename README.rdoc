@@ -32,4 +32,30 @@ end
 I currently have an action in User that we can invoke update_admin
 It takes in params[:user_id] and params[:admin] - I could have just set it up the route to expect update_admin/:user_id/:admin, but update_admin/:user_id?admin=<true||false>
 
+* IP Address for each Comment
+
+I found this command used the following as suggested through stacktrace "Socket::getaddrinfo(Socket.gethostname,"echo",Socket::AF_INET)[0][3]"
+
+* Found logic error in update_active_users
+
+I should have took in consideration of user starting app for the first time. Meaning that last_user_comment variable would have been nil, so I should have assigned it attribute to false when query returns nil.
+
+* Active Users display
+
+Should have been for non admin users to be in index action of users controller: 
+@users = Users.where("active = ?", true)
+And perhaps left User.all for admin.
+
+if @current_user.admin
+  @users = User.all
+else
+  @users = User.where("active = ?", true)
+end
+
+* For destroying session
+
+I actually believed that link_to worked, so I had to resort to posting it through a form and submit_tag. 
+
+* has_many relation with user
+
 <tt>rake doc:app</tt>.
