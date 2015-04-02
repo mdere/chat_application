@@ -1,0 +1,5 @@
+<table>
+	<% comments.each do |user_comment| %>
+    <%= render :partial => 'comments', :locals => { :user_comment => user_comment } %>
+  <% end %>
+</table>

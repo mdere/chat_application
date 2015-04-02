@@ -2,8 +2,10 @@ Rails.application.routes.draw do
   root :to => "users#index"
 
   resources :comments
-  resources :users
 
+  get 'users/update_comments', to: 'users#update_comments'
+  get 'users/create', to: 'users#create'
+  
   post 'comments/submit/:user_id', to: 'comments#submit'
   post 'users/change_username/:user_id', to: 'users#change_username'
 

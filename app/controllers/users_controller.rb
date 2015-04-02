@@ -12,13 +12,6 @@ class UsersController < ApplicationController
     @current_user = User.find(session[:user_id])
   end
 
-  def update_users_session
-    respond_to do |format|
-      format.html
-      format.js
-    end
-  end
-
   def change_username
     user = User.find(session[:user_id])
     all_users = User.where("active = ?", true)
@@ -44,27 +37,17 @@ class UsersController < ApplicationController
   end
 
   def update_comments
-    @new_comments = Comment.where("created_at > ?", Time.at(params[:after]) + 1)
-  end  
+    comments = Comment.all
+    respond_to do |format|
+      format.html do 
+        render :partial => 'comment_table', :locals => { :comments => comments }
+      end
+    end
+  end 
 
   def destroy_session
     session[:user_id] = nil
     redirect_to :back
-  end
-
-  # GET /users/1
-  # GET /users/1.json
-  def show
-
-  end
-
-  # GET /users/new
-  def new
-    @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
   end
 
   # POST /users
@@ -76,15 +59,4 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /users/1
-  # PATCH/PUT /users/1.json
-  def update
-
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
-  def destroy
-
-  end
 end

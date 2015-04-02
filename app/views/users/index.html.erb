@@ -10,11 +10,9 @@
     <div id="chat_space">
       <div>
         <h4>Comments:</h4>
-        <table id="comment_space">
-          <% @comments.each do |user_comment| %>
-            <%= render :partial => 'comments', :locals => {:user_comment => user_comment} %> 
-          <% end %> 
-        </table>
+        <div id="comments">
+          <%= render :partial => 'comment_table', :locals => { :comments => @comments} %>
+        </div>
       </div>
       <div id="comment_form">
         <%= form_tag "/comments/submit/#{session[:user_id]}" do %>
@@ -55,3 +53,13 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(
+    function() {
+      setInterval( function() {
+        $('#comments').load('/users/update_comments');
+      }, 5000);
+    } 
+  );
+</script>
