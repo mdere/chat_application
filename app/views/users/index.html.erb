@@ -15,7 +15,7 @@
         </div>
       </div>
       <div id="comment_form">
-        <%= form_tag "/comments/submit/#{session[:user_id]}" do %>
+        <%= form_tag "/comments/submit/#{session[:user_id]}", :remote => true  do %>
           <h4>Comment Here!</h4>
           <div>
             <%= text_area_tag :comment %>
@@ -53,13 +53,16 @@
     </div>
   </div>
 </div>
-
+<!-- Added script here for testing purposes for AJAX implementation -->
 <script>
   $(document).ready(
     function() {
       setInterval( function() {
         $('#comments').load('/users/update_comments');
-      }, 5000);
+      }, 2500);
+      setInterval( function() {
+        $('#user_list_space').load('/users/update_user_list');
+      }, 2500);
     } 
   );
 </script>

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :comments
 
+  get 'users/update_user_list', to: 'users#update_user_list'
   get 'users/update_comments', to: 'users#update_comments'
   get 'users/create', to: 'users#create'
   

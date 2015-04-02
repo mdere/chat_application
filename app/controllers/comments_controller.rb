@@ -2,7 +2,12 @@ class CommentsController < ApplicationController
 
   def submit
     Comment.new_comment(params[:comment], session[:user_id])
-    redirect_to :root
+
+    respond_to do |format|
+      format.html do
+        render :template => "users/update_comments"
+      end
+    end
   end
 
   # GET /comments

@@ -18,11 +18,16 @@ class User < ActiveRecord::Base
 
 	def update_active_users
 		last_user_comment = Comment.where("user_id = ?", self.id).last
+		# This here checks if user is new or not
 		if last_user_comment.nil?
-			self.update_attributes(active: false)
+			if (Time.now - self.created_at) < 120
+				self.update_attributes(active: true)
+			else
+				self.update_attributes(active: false)
+			end
 		elsif (Time.now - last_user_comment.created_at) > 120
 			self.update_attributes(active: false)
-		else
+		else 
 			self.update_attributes(active: true)
 		end
 	end

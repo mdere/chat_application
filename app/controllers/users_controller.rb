@@ -4,12 +4,16 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @current_user = User.find(session[:user_id])
+    if @current_user.admin
+      @users = User.all
+    else
+      @users = User.where("active = ?", true)
+    end
     @users.each do |user|
       user.update_active_users
     end
     @comments = Comment.all
-    @current_user = User.find(session[:user_id])
   end
 
   def change_username
@@ -33,6 +37,24 @@ class UsersController < ApplicationController
       redirect_to root_path
     else
       redirect_to root_path
+    end
+  end
+
+  def update_user_list
+    current_user = User.find(session[:user_id])
+    check_users = User.all
+    check_users.each do |user|
+      user.update_active_users
+    end
+    if current_user.admin
+      users = User.all
+    else
+      users = User.where("active = ?", true)
+    end   
+    respond_to do |format|
+      format.html do
+        render :partial => 'user_list', :locals => { :users => users }
+      end
     end
   end
 
