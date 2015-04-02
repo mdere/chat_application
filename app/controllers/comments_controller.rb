@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
     Comment.new_comment(params[:comment], session[:user_id])
     redirect_to :root
   end
+
   # GET /comments
   # GET /comments.json
   def index

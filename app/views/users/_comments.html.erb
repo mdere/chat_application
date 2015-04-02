@@ -1,0 +1,10 @@
+<tr>
+  <div id="comment" data-time="<%= user_comment.created_at.to_i %>">
+  	<div>
+    	<strong>
+      <%= User.find(user_comment.user_id).username %>
+    	</strong> @ <%= user_comment.created_at %>
+   	</div>
+  	<div><%= user_comment.comment %></div>
+  </div>
+</tr>

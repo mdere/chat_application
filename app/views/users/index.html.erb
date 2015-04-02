@@ -4,28 +4,15 @@
   </div>
   <div class="Row">
     <div id="user_list_space">
-      <h4>Users:</h4>
-      <ul>
-        <% @users.each do |user| %>
-          <li>
-            <%= user.username %> (<%= user.active ? "Active" : "Not-Active" %>)
-          </li>
-        <% end %>
-      </ul>
+      <%= render partial: "user_list", locals: {users: @users} %>
     </div>
 
     <div id="chat_space">
-      <div id="comment_space">
+      <div>
         <h4>Comments:</h4>
-        <table>
+        <table id="comment_space">
           <% @comments.each do |user_comment| %>
-            <tr>
-              <div>
-                <strong>
-                  <%= User.find(user_comment.user_id).username %>
-                </strong> @ <%= user_comment.created_at %></div>
-              <div><%= user_comment.comment %></div>
-            </tr>
+            <%= render :partial => 'comments', :locals => {:user_comment => user_comment} %> 
           <% end %> 
         </table>
       </div>
@@ -46,6 +33,11 @@
       <div>
         Current Username: <strong><%= User.find(session[:user_id]).username %></strong>
       </div>
+      <% if !session[:message].nil? %>
+        <div id="alert_message">
+          <%= session[:message] %>
+        </div>
+      <% end %>
       <div>
         Input New Username Here:
       </div>

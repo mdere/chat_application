@@ -2,6 +2,10 @@
 
 This here are the mistakes I overlooked and what I could have done:
 
+* Update User model
+
+Make active default to true
+
 * User Session:
 
 I could have used some form of "sign-in" authentication as guest or admin. With a UI in the homepage with "sign-in as guest or admin". This would have been a better solution. 
@@ -9,9 +13,9 @@ I could have used some form of "sign-in" authentication as guest or admin. With 
 When user signs in as guest - create a new anonymous_user and redirect to root_url.
 When Admin signs in - redirects to sign_in page with credentials managed by sessions controller "create" maybe, if User.authenticate(credentials) and user admin attribute :admin eq true, then redirect to root_url.
 
-Then when use signs out, this was another miss on my part I just noticed afterwards, I tried to create a destroy session link for testing purposes, BUT I could have implemented that as a sign_out button which calls action sessions#destroy setting the session[:user_id] to nil
+Then when use signs out, this was another miss on my part I just noticed afterwards, I tried to create a destroy session link for testing purposes. I used a link_to button hoping that I could have targetted the controller action, but it kept on redirecting me to the wrong controller, so I figured that I could just use a simple form_tag helper to target the correct controller. I tested that on my side afterwards and it works. Overall my initial intentions were to implement a sign_out button which calls action sessions#destroy setting the session[:user_id] to nil
 
-The reason I went with this route was because I thought I could have got away with relying on the session of the user when they opened this page. This was clearly an assumption on my part to assume that each user's session was defined on the browser session. 
+The reason I went with this route was because I thought I could have got away with relying on the session of the user when they opened this page. Closing browser destroys session.
 
 * Admin viewing all comments vs Guest viewing all comments
 
@@ -20,8 +24,6 @@ I should have in users#index when pulling all the comments, I should have did th
 if @current_user.admin
   @comments = Comment.all
 else
-  # For all other guest users
-  last_current_user_comment = Comment.where("user_id = ?", @current_user.id).first
   # This activerecord query will pull all comments after the user
   # created_at time, which I believe I should have done.
   @comments = Comment.where("created_at > ?", @current_user.created_at)
@@ -30,7 +32,7 @@ end
 * Setting Admin-ship through GET request
 
 I currently have an action in User that we can invoke update_admin
-It takes in params[:user_id] and params[:admin] - I could have just set it up the route to expect update_admin/:user_id/:admin, but update_admin/:user_id?admin=<true||false>
+It takes in params[:user_id] and params[:admin] - I could have just set it up the route to expect update_admin/:user_id/:admin, but update_admin/:user_id?admin=<true||false> also works too.
 
 * IP Address for each Comment
 
@@ -56,6 +58,37 @@ end
 
 I actually believed that link_to worked, so I had to resort to posting it through a form and submit_tag. 
 
-* has_many relation with user
+* has_many relation with users / comments
+
+At the moment, I know Implemented the has_many :comments on users, but I didn't really need to use it. I just used a user_id foreign key reference.  
+
+* AJAX calls on User List / Comments
+
+What I think could have been implemented for Comments:
+# Implement jquery call on submit when user submits new comment to append a new row to the comment table with out updating
+# Implement jquery call on the comment list to pull a new comment every 5-10 seconds as long you are in the same session.
+
+What I think could have been implemented for Users:
+# Implement a separate jquery call that will update the list periodically.
+# Implement a separate jquery call for the user update button so that it will update the database async. and then the method above will update it as soon db update is done.
+
+* Flash Notice with redirect when checking if user exists & cannot be nil
+
+I noticed that this did not work afterwards. I figured that the flash approach wouldn't work. So my thought here was to create a new logic and updated the following:
+
+I noticed that I should have queried for all users that are active...
+
+User.where("active = ?", false)
+
+if user.username == params[:username] || params[:username].nil?
+  session[:message] = "User Name Already Exists OR Can Not Be Empty!"
+  redirect_to :back and return
+end
+
+Then delete session messasge when user sucessfully creates new username
+
+Update the front end to display if session[:message] exist. BUT with all this work, now thinking, I could have just used a validation helper in models to make sure that when username is being updated, it cannot be empty. Making sure that it has presence in the model and perhaps I could have taken away the params[:username].nil? and do a require on the submission text field. 
+
+For the message, it will disappear if user successfully creates new username or refresh page. 
 
 <tt>rake doc:app</tt>.

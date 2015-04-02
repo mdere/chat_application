@@ -12,15 +12,24 @@ class UsersController < ApplicationController
     @current_user = User.find(session[:user_id])
   end
 
+  def update_users_session
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
+
   def change_username
     user = User.find(session[:user_id])
-    all_users = User.all
+    all_users = User.where("active = ?", true)
     all_users.each do |user|
-      if user.username == params[:username]
-        redirect_to :back, :flash => { :error => "Username Already Exists!" } and return
+      if user.username == params[:username] || params[:username].nil?
+        session[:message] = "User Name Already Exists OR Can Not Be Empty!"
+        redirect_to :back and return
       end
     end
     user.change_user_name(params[:username])
+    clear_message
     redirect_to :back
   end
 
@@ -33,6 +42,10 @@ class UsersController < ApplicationController
       redirect_to root_path
     end
   end
+
+  def update_comments
+    @new_comments = Comment.where("created_at > ?", Time.at(params[:after]) + 1)
+  end  
 
   def destroy_session
     session[:user_id] = nil
