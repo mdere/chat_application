@@ -7,13 +7,23 @@ class UsersController < ApplicationController
     @current_user = User.find(session[:user_id])
     if @current_user.admin
       @users = User.all
+      @comments = Comment.all
     else
       @users = User.where("active = ?", true)
+      @comments = Comment.where("created_at > ?", @current_user.created_at)
     end
     @users.each do |user|
       user.update_active_users
     end
-    @comments = Comment.all
+  end
+
+  def re_index
+    current_user = User.find(session[:user_id])
+    respond_to do |format|
+      format.html do
+        render :partial => 'current_user', :locals => { :user => current_user }
+      end
+    end
   end
 
   def change_username
@@ -59,7 +69,12 @@ class UsersController < ApplicationController
   end
 
   def update_comments
-    comments = Comment.all
+    current_user = User.find(session[:user_id])
+    if current_user.admin
+      comments = Comment.all
+    else
+      comments = Comment.where("created_at > ?", current_user.created_at)
+    end
     respond_to do |format|
       format.html do 
         render :partial => 'comment_table', :locals => { :comments => comments }
